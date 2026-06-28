@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genshin Upgrade Planner</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='85'>🌟</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── Character select screen ── -->
+<div id="char-select" class="char-select-screen hidden">
+  <div class="char-select-inner">
+    <div class="char-select-title">Select Character</div>
+    <div id="char-cards" class="char-cards"></div>
+  </div>
+</div>
+
+<!-- ── Shared URL banner ── -->
+<div id="shared-banner" class="shared-banner hidden">
+  👀 You're viewing a shared plan. &nbsp;<a id="shared-banner-link" href="">Open my own planner</a> &nbsp;·&nbsp; <button class="shared-banner-edit" id="shared-banner-edit">✏️ Edit this plan</button>
+  <button class="shared-banner-close" id="shared-banner-close">✕</button>
+</div>
+
+<!-- ── Main planner ── -->
+<div class="wrap">
+
+  <header>
+    <div class="char-portrait" id="header-portrait">
+      <span id="header-icon">🌟</span>
+    </div>
+    <div class="header-info">
+      <h1 id="header-name">Genshin Upgrade Planner</h1>
+      <p class="sub" id="header-sub">Select a character to begin</p>
+    </div>
+    <div class="header-actions">
+      <button class="share-btn" id="share-btn" style="display:none">📤 Share</button>
+      <button class="change-char-btn" id="change-char-btn">Change Character</button>
+    </div>
+  </header>
+
+  <div class="main-grid" id="main-grid">
+
+    <!-- COL 1: State + Goal + Inventory -->
+    <div class="left-col">
+      <div class="card">
+        <h2>Current State</h2>
+        <div class="char-inputs">
+          <label><span>Level</span><input id="level" type="number" min="1" max="90" value="1"></label>
+          <label><span>Ascension</span>
+            <select id="ascension">
+              <option value="0">0 — cap 20</option>
+              <option value="1">1 — cap 40</option>
+              <option value="2">2 — cap 50</option>
+              <option value="3">3 — cap 60</option>
+              <option value="4">4 — cap 70</option>
+              <option value="5">5 — cap 80</option>
+              <option value="6">6 — cap 90</option>
+            </select>
+          </label>
+          <label><span>Normal Attack</span><input id="na"    type="number" min="1" max="10" value="1"></label>
+          <label><span>Skill</span>        <input id="skill" type="number" min="1" max="10" value="1"></label>
+          <label><span>Burst</span>        <input id="burst" type="number" min="1" max="10" value="1"></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Your Goal</h2>
+        <div class="char-inputs">
+          <label><span>Target Ascension</span>
+            <select id="target-asc">
+              <option value="0">0 — cap 20</option>
+              <option value="1">1 — cap 40</option>
+              <option value="2">2 — cap 50</option>
+              <option value="3">3 — cap 60</option>
+              <option value="4">4 — cap 70</option>
+              <option value="5">5 — cap 80</option>
+              <option value="6" selected>6 — cap 90</option>
+            </select>
+          </label>
+          <label><span>Target Level</span>        <input id="target-level" type="number" min="1" max="90"  value="90"></label>
+          <label><span>Target Normal Attack</span> <input id="target-na"    type="number" min="1" max="10" value="10"></label>
+          <label><span>Target Skill</span>         <input id="target-skill" type="number" min="1" max="10" value="10"></label>
+          <label><span>Target Burst</span>         <input id="target-burst" type="number" min="1" max="10" value="10"></label>
+        </div>
+      </div>
+
+      <div class="card col-scroll inventory-card">
+        <h2>Inventory</h2>
+        <div id="mat-sections"></div>
+      </div>
+    </div>
+
+    <!-- COL 2: Results -->
+    <div class="card results-card col-scroll">
+      <h2>What You Need</h2>
+      <div id="summary"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="characters.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
