@@ -517,8 +517,14 @@ header h1 { font-size: 15px; font-weight: 700; color: #f0f6ff; }
 /* ── Character / Goal inputs ─────────────────────────────────────────────── */
 .char-inputs {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 6px;
+}
+
+@media (max-width: 600px) {
+  .char-inputs {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
 }
 
 .char-inputs label { display: flex; flex-direction: column; gap: 3px; }
@@ -540,6 +546,7 @@ header h1 { font-size: 15px; font-weight: 700; color: #f0f6ff; }
   font-size: 12px;
   outline: none;
   transition: border-color 0.15s;
+  height: 28px;
 }
 
 .char-inputs input:focus,
@@ -582,7 +589,7 @@ header h1 { font-size: 15px; font-weight: 700; color: #f0f6ff; }
 
 .mat-row {
   display: grid;
-  grid-template-columns: 18px 1fr auto auto;
+  grid-template-columns: 18px 1fr 120px 70px;
   align-items: center;
   gap: 6px;
   padding: 4px 8px;
@@ -648,7 +655,7 @@ header h1 { font-size: 15px; font-weight: 700; color: #f0f6ff; }
 
 .remain-row {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr 120px 100px;
   align-items: center;
   gap: 10px;
   padding: 5px 10px;
@@ -659,7 +666,7 @@ header h1 { font-size: 15px; font-weight: 700; color: #f0f6ff; }
 }
 
 .remain-label { color: #9ab4cc; font-weight: 600; }
-.remain-spent { color: #3d5268; font-size: 10px; }
+.remain-spent { color: #3d5268; font-size: 10px; text-align: right; }
 .remain-left  { font-weight: 700; text-align: right; min-width: 90px; }
 .remain-left.ok   { color: #22c55e; }
 .remain-left.warn { color: #f59e0b; }
