@@ -1,3 +1,22 @@
+// ── Element / weapon display metadata ─────────────────────────────────────────
+const ELEMENT_META = {
+  Pyro:    { color: "#ef4444", icon: "🔥", img: "icons/element_pyro.png"    },
+  Hydro:   { color: "#38bdf8", icon: "💧", img: "icons/element_hydro.png"   },
+  Cryo:    { color: "#a5f3fc", icon: "❄️", img: "icons/element_cryo.png"    },
+  Electro: { color: "#c084fc", icon: "⚡", img: "icons/element_electro.png" },
+  Dendro:  { color: "#4ade80", icon: "🌿", img: "icons/element_dendro.png"  },
+  Geo:     { color: "#fbbf24", icon: "⛰️", img: "icons/element_geo.png"     },
+  Anemo:   { color: "#34d399", icon: "🌀", img: "icons/element_anemo.png"   },
+};
+
+const WEAPON_META = {
+  Sword:    { icon: "🗡️", img: "icons/weapon_sword.png"    },
+  Claymore: { icon: "⚔️",  img: "icons/weapon_claymore.png" },
+  Polearm:  { icon: "🔱",  img: "icons/weapon_polearm.png"  },
+  Catalyst: { icon: "🔮",  img: "icons/weapon_catalyst.png" },
+  Bow:      { icon: "🏹",  img: "icons/weapon_bow.png"      },
+};
+
 // ── EXP constants ─────────────────────────────────────────────────────────────
 const EXP_VALUES = { advice: 1000, aexp: 5000, wit: 20000 };
 const EXP_BY_CAP = {
@@ -7,13 +26,79 @@ const EXP_BY_CAP = {
 
 // ── Active character state ────────────────────────────────────────────────────
 let CHAR = null;
+let filterElement = null;
+let filterWeapon  = null;
 const inv = {};
 
 // ── Character select screen ───────────────────────────────────────────────────
+function buildFilters() {
+  buildCustomSelect(
+    document.getElementById("element-filter"),
+    "All Elements", ELEMENT_META, filterElement,
+    v => { filterElement = v; buildFilters(); buildCharSelect(); }
+  );
+  buildCustomSelect(
+    document.getElementById("weapon-filter"),
+    "All Weapons", WEAPON_META, filterWeapon,
+    v => { filterWeapon = v; buildFilters(); buildCharSelect(); }
+  );
+}
+
+function buildCustomSelect(container, placeholder, meta, currentValue, onChange) {
+  container.innerHTML = "";
+  container.className = "custom-select";
+
+  const sel = currentValue ? meta[currentValue] : null;
+
+  // ── Trigger button ──────────────────────────────────────────────────────
+  const btn = document.createElement("button");
+  btn.className = "cs-btn" + (currentValue ? " cs-has-value" : "");
+  if (sel?.color) btn.style.setProperty("--fc", sel.color);
+  const btnIcon = sel?.img
+    ? `<img src="${sel.img}" class="cs-btn-icon" onerror="this.style.display='none'">`
+    : (sel?.icon ? `<span>${sel.icon}</span>` : "");
+  btn.innerHTML = `${btnIcon}<span class="cs-btn-label">${currentValue || placeholder}</span><svg class="cs-arrow" viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="currentColor"/></svg>`;
+  btn.addEventListener("click", e => {
+    e.stopPropagation();
+    const wasOpen = container.classList.contains("cs-open");
+    document.querySelectorAll(".custom-select.cs-open").forEach(el => el.classList.remove("cs-open"));
+    if (!wasOpen) container.classList.add("cs-open");
+  });
+
+  // ── Options list ────────────────────────────────────────────────────────
+  const dropdown = document.createElement("div");
+  dropdown.className = "cs-dropdown";
+
+  const allOpt = document.createElement("div");
+  allOpt.className = "cs-option" + (!currentValue ? " cs-selected" : "");
+  allOpt.textContent = placeholder;
+  allOpt.addEventListener("click", e => { e.stopPropagation(); container.classList.remove("cs-open"); onChange(null); });
+  dropdown.appendChild(allOpt);
+
+  for (const [key, m] of Object.entries(meta)) {
+    const opt = document.createElement("div");
+    opt.className = "cs-option" + (currentValue === key ? " cs-selected" : "");
+    if (m.color) opt.style.setProperty("--fc", m.color);
+    const icon = m.img
+      ? `<img src="${m.img}" class="cs-opt-icon" onerror="this.style.display='none'">`
+      : `<span>${m.icon}</span>`;
+    opt.innerHTML = `${icon}<span>${key}</span>`;
+    opt.addEventListener("click", e => { e.stopPropagation(); container.classList.remove("cs-open"); onChange(key); });
+    dropdown.appendChild(opt);
+  }
+
+  container.appendChild(btn);
+  container.appendChild(dropdown);
+}
+
 function buildCharSelect() {
   const container = document.getElementById("char-cards");
   container.innerHTML = "";
+  let shown = 0;
   for (const [id, c] of Object.entries(CHARACTERS)) {
+    if (filterElement && c.element !== filterElement) continue;
+    if (filterWeapon  && c.weapon  !== filterWeapon)  continue;
+    shown++;
     const card = document.createElement("div");
     card.className = "char-card" + (c.comingSoon ? " char-card-soon" : "");
     card.style.setProperty("--accent", c.color);
@@ -29,6 +114,9 @@ function buildCharSelect() {
     `;
     if (!c.comingSoon) card.addEventListener("click", () => selectCharacter(id));
     container.appendChild(card);
+  }
+  if (!shown) {
+    container.innerHTML = `<div class="char-no-results">No characters match the selected filters.</div>`;
   }
 }
 
@@ -281,7 +369,7 @@ function update() {
   for (const [k, needed] of Object.entries(totalCost)) {
     if (!needed) continue;
     craftUp(pool, k, needed, craftLog);
-    if ((pool[k] || 0) < needed) missing[k] = needed - (pool[k] || 0);
+    if ((pool[k] || 0) < needed) { missing[k] = needed - (pool[k] || 0); pool[k] = 0; }
     else pool[k] -= needed;
   }
   const crafts  = aggregateCrafts(craftLog);
@@ -312,6 +400,12 @@ function update() {
 }
 
 // ── Render helpers ────────────────────────────────────────────────────────────
+function matIcon(m) {
+  return m?.img
+    ? `<img src="${m.img}" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;border-radius:50%" onerror="this.style.display='none'">`
+    : (m?.icon || "");
+}
+
 function renderGoalRow(aF, aT, nF, nT, sF, sT, bF, bT) {
   const chips = [
     aF !== aT ? `Ascension ${aF}→${aT}` : null,
@@ -329,7 +423,7 @@ function renderMats(totalCost, missing) {
       const mat  = CHAR.materials[k];
       const have = inv[k] || 0;
       const ok   = !missing[k];
-      const img  = mat?.img ? `<img src="${mat.img}" style="width:14px;height:14px;object-fit:contain;border-radius:50%;vertical-align:middle" onerror="this.style.display='none'">` : mat?.icon || "";
+      const img  = matIcon(mat);
       return `<div class="mat-row ${ok ? "mat-row-ok" : "mat-row-miss"}">
         <span class="mat-row-icon">${img}</span>
         <span class="mat-row-name">${mat?.label || k}</span>
@@ -345,9 +439,9 @@ function renderExp(expNeeded, expHave, expShort, lvFrom, lvTo, tgtCap, witNeeded
   return `<div class="result-section">
     <div class="result-title">EXP Books — Lv ${lvFrom}→${lvTo} (cap ${tgtCap})</div>
     <div class="exp-grid">
-      <div class="exp-row"><span>📄 Wanderer's Advice (×1,000)</span><span>${(inv.advice||0).toLocaleString()}</span></div>
-      <div class="exp-row"><span>📋 Adventurer's Experience (×5,000)</span><span>${(inv.aexp||0).toLocaleString()}</span></div>
-      <div class="exp-row"><span>📖 Hero's Wit (×20,000)</span><span>${(inv.wit||0).toLocaleString()}</span></div>
+      <div class="exp-row"><span>${matIcon(CHAR.materials.advice)} Wanderer's Advice (×1,000)</span><span>${(inv.advice||0).toLocaleString()}</span></div>
+      <div class="exp-row"><span>${matIcon(CHAR.materials.aexp)} Adventurer's Experience (×5,000)</span><span>${(inv.aexp||0).toLocaleString()}</span></div>
+      <div class="exp-row"><span>${matIcon(CHAR.materials.wit)} Hero's Wit (×20,000)</span><span>${(inv.wit||0).toLocaleString()}</span></div>
       <div class="exp-row exp-total"><span>Total EXP</span><span>${expHave.toLocaleString()} / ${expNeeded.toLocaleString()}</span></div>
       <div class="exp-row exp-total"><span>Hero's Wits needed</span><span class="${ok ? "ok" : "warn"}">${ok ? `✓ (${witNeeded})` : `Need ${witNeeded}, short ${witShort}`}</span></div>
     </div>
@@ -361,12 +455,12 @@ function renderRemaining(moraNeeded, moraHave, moraLeft, expNeeded, expHave, exp
     <div class="result-title">Remaining After Upgrades</div>
     <div class="remain-grid">
       <div class="remain-row">
-        <span class="remain-label">💰 Mora</span>
+        <span class="remain-label">${matIcon(CHAR.materials["mora"])} Mora</span>
         <span class="remain-spent">${moraNeeded.toLocaleString()} spent</span>
         <span class="remain-left ${moraOk ? "ok" : "warn"}">${moraOk ? moraLeft.toLocaleString() + " left" : (moraLeft*-1).toLocaleString() + " short"}</span>
       </div>
       <div class="remain-row">
-        <span class="remain-label">📖 EXP</span>
+        <span class="remain-label">${matIcon(CHAR.materials["wit"])} EXP</span>
         <span class="remain-spent">${expNeeded.toLocaleString()} spent</span>
         <span class="remain-left ${expOk ? "ok" : "warn"}">${expOk ? "~" + witLeft + " wits left" : Math.ceil((expNeeded - expHave)/20000) + " wits short"}</span>
       </div>
@@ -381,9 +475,9 @@ function renderCrafts(crafts) {
     <div class="craft-list">${crafts.map(c => {
       const fm = CHAR.materials[c.from], tm = CHAR.materials[c.to];
       return `<div class="craft-row">
-        <span class="craft-from">${fm?.icon} ${c.fromAmt}× ${fm?.label}</span>
+        <span class="craft-from">${matIcon(fm)} ${c.fromAmt}× ${fm?.label}</span>
         <span class="craft-arrow">→</span>
-        <span class="craft-to">${tm?.icon} ${c.toAmt}× ${tm?.label}</span>
+        <span class="craft-to">${matIcon(tm)} ${c.toAmt}× ${tm?.label}</span>
       </div>`;
     }).join("")}</div>
   </div>`;
@@ -453,6 +547,10 @@ document.getElementById("share-btn").addEventListener("click", () => {
 });
 
 // ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener("click", () => {
+  document.querySelectorAll(".custom-select.cs-open").forEach(el => el.classList.remove("cs-open"));
+});
+buildFilters();
 buildCharSelect();
 document.getElementById("change-char-btn").addEventListener("click", showCharSelect);
 

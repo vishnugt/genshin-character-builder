@@ -45,11 +45,104 @@ body {
   margin-bottom: 20px;
 }
 
+.char-filters {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+/* ── Custom icon dropdowns ───────────────────────────────────────────────── */
+.custom-select {
+  position: relative;
+  min-width: 148px;
+}
+
+.cs-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  width: 100%;
+  background: #0f1318;
+  border: 1.5px solid #1e2d3e;
+  border-radius: 8px;
+  color: #4a6a84;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  text-align: left;
+}
+
+.cs-btn:hover { border-color: #2d4258; color: #9ab4cc; }
+.cs-btn.cs-has-value { border-color: var(--fc); color: var(--fc); }
+
+.cs-btn-icon, .cs-opt-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.cs-btn-label { flex: 1; }
+
+.cs-arrow {
+  width: 8px;
+  height: 5px;
+  flex-shrink: 0;
+  color: #3d5268;
+  transition: transform 0.15s;
+}
+
+.custom-select.cs-open .cs-arrow { transform: rotate(180deg); }
+
+.cs-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 100%;
+  background: #131822;
+  border: 1px solid #1e2d3e;
+  border-radius: 8px;
+  padding: 4px;
+  z-index: 200;
+  box-shadow: 0 8px 24px #00000066;
+}
+
+.custom-select.cs-open .cs-dropdown { display: block; }
+
+.cs-option {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  color: #4a6a84;
+  transition: background 0.1s, color 0.1s;
+  white-space: nowrap;
+}
+
+.cs-option:hover { background: #1a2235; color: var(--fc, #9ab4cc); }
+.cs-option.cs-selected { color: var(--fc, #9ab4cc); background: #151d2a; }
+
 .char-cards {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.char-no-results {
+  width: 100%;
+  text-align: center;
+  color: #3d5268;
+  font-size: 12px;
+  padding: 16px 0;
 }
 
 .char-card {

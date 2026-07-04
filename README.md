@@ -10,14 +10,55 @@ A fully offline, static HTML/CSS/JS planner for tracking character ascension and
 index.html      — Layout, character select overlay, shared URL banner
 style.css       — Dark teal/slate theme, 2-column 100vh locked layout
 script.js       — All logic: crafting, cost calculation, share URL, rendering
-characters.js   — Character database (loaded before script.js)
+materials.js    — Material catalog: all metadata (label, icon, color, img, group)
+templates.js    — Standard 5★ builder functions (stdCraftUp/Order/Ascension/Talents)
+characters.js   — Character database: identity, materials, matGroups, template calls
+icons/          — Locally cached element and weapon icons (no CDN dependency)
+portraits/      — Locally cached character portrait images
+images/items/   — Locally cached material item icons (288 files, one per MATERIALS entry)
 ```
+
+---
+
+## Character Select Filters
+
+The select screen has two filter dropdowns — element and weapon type. Both show Genshin-style icons inside the options list (not just on the trigger button), which requires a custom div-based dropdown since native `<option>` elements don't support images.
+
+**State variables** in `script.js`:
+```js
+let filterElement = null;   // e.g. "Cryo" or null for All
+let filterWeapon  = null;   // e.g. "Catalyst" or null for All
+```
+
+**Metadata constants** in `script.js`:
+```js
+const ELEMENT_META = {
+  Pyro: { color: "#ef4444", icon: "🔥", img: "icons/element_pyro.png" },
+  ...
+};
+const WEAPON_META = {
+  Sword: { icon: "🗡️", img: "icons/weapon_sword.png" },
+  ...
+};
+```
+
+**Custom dropdown** (`buildCustomSelect` in `script.js`): each call builds a `.custom-select` container with a `.cs-btn` trigger and a `.cs-dropdown` div containing `.cs-option` rows. Opening/closing is toggled via the `cs-open` CSS class. A top-level `document` click listener closes any open dropdown when clicking outside.
+
+**Icons** are stored locally in `icons/` (downloaded from gi.yatta.moe at setup time):
+
+| File | Content |
+|------|---------|
+| `icons/element_pyro.png` … `element_anemo.png` | 7 element icons |
+| `icons/weapon_sword.png` … `weapon_bow.png` | 5 weapon icons |
 
 ---
 
 ## Adding a New Character
 
-All character data lives in `characters.js` as entries in the `CHARACTERS` object. Copy an existing entry (e.g. `citlali`) and fill in the fields.
+1. Add any new materials to `materials.js` (skip if a material already exists there).
+2. Add the character entry to `characters.js`, referencing materials by `MATERIALS.<key>`.
+
+Copy an existing entry (e.g. `citlali`) and fill in the fields.
 
 ### Required fields
 
@@ -95,24 +136,19 @@ Use these totals to verify scraped data is correct before adding a character.
 
 ## Image Sources
 
-### Character portraits
+All images are stored locally and committed to the repo — no CDN requests at runtime. The original source URLs are recorded in `asset-sources.sh` (gitignored — kept locally only). Run that script to re-download any asset from scratch.
 
-**1. paimon.moe** — best for released characters:
-```
-https://paimon.moe/images/characters/{name}.png
-```
-Use lowercase, underscores for spaces: `kamisato_ayaka.png`, `raiden_shogun.png`
+### Character portraits (`portraits/`)
 
-**2. game8.co** — good for upcoming/unreleased characters:
-- Visit `https://game8.co/games/Genshin-Impact/archives/{page-id}`
-- Right-click the character portrait → Copy image address
-- CDN format: `https://img.game8.co/{id}/{hash}.png/show`
+File naming: `{character_name}.png` in lowercase (e.g. `citlali.png`, `raiden_shogun.png`).
 
-**3. Project Amber (gi.yatta.moe)**:
-```
-https://gi.yatta.moe/assets/UI/UI_AvatarIcon_{InternalName}.png
-```
-Internal names don't always match display names (e.g. Wanderer's internal name is Scaramouche).
+Download the portrait, commit it to `portraits/`, and add the source URL to `asset-sources.sh` (so it can be re-fetched later). Source options:
+
+| Source | Best for | URL pattern |
+|--------|----------|-------------|
+| paimon.moe | Released characters | `https://paimon.moe/images/characters/{name}.png` |
+| game8.co | Upcoming / unreleased | Right-click portrait → Copy image address |
+| gi.yatta.moe | Fallback | `https://gi.yatta.moe/assets/UI/UI_AvatarIcon_{InternalName}.png` (Wanderer → Scaramouche) |
 
 ### Item icons
 
