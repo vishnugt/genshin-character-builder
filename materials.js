@@ -447,6 +447,20 @@ const MATERIALS = {
   madmans_restraint:        { label: "Madman's Restraint",           icon: "🔗", color: "#f87171", group: "talent", img: "images/items/UI_ItemIcon_113082.png" },
   mask_virtuous_doctor:     { label: "Mask of the Virtuous Doctor",  icon: "🎭", color: "#a78bfa", group: "talent", img: "images/items/mask_of_the_virtuous_doctor.png" },
 
+  // — Newly Added Materials —
+  clearwater_jade:         { label: "Clearwater Jade",          icon: "💎", color: "#34d399", group: "asc", img: "images/items/clearwater_jade.png" },
+  meshing_gear:            { label: "Meshing Gear",             icon: "⚙️", color: "#9ca3af", group: "asc", img: "images/items/meshing_gear.png" },
+  mechanical_spur_gear:    { label: "Mechanical Spur Gear",     icon: "⚙️", color: "#60a5fa", group: "asc", img: "images/items/mechanical_spur_gear.png" },
+  artificed_dynamic_gear:  { label: "Artificed Dynamic Gear",   icon: "⚙️", color: "#a855f7", group: "asc", img: "images/items/artificed_dynamic_gear.png" },
+  transoceanic_pearl:      { label: "Transoceanic Pearl",       icon: "🐚", color: "#9ca3af", group: "asc", img: "images/items/transoceanic_pearl.png" },
+  transoceanic_chunk:      { label: "Transoceanic Chunk",       icon: "🐚", color: "#60a5fa", group: "asc", img: "images/items/transoceanic_chunk.png" },
+  xenochromatic_crystal:   { label: "Xenochromatic Crystal",    icon: "🐚", color: "#a855f7", group: "asc", img: "images/items/xenochromatic_crystal.png" },
+  heterochromatic_crystal: { label: "Heterochromatic Crystal",  icon: "🐚", color: "#a855f7", group: "asc", img: "images/items/heterochromatic_crystal.png" },
+  ascended_sample_knight:   { label: "Ascended Sample: Knight",  icon: "🛡️", color: "#ec4899", group: "talent", img: "images/items/ascended_sample_knight.png" },
+  ascended_sample_queen:    { label: "Ascended Sample: Queen",   icon: "👑", color: "#ec4899", group: "talent", img: "images/items/ascended_sample_queen.png" },
+  ascended_sample_rook:     { label: "Ascended Sample: Rook",    icon: "🏰", color: "#ec4899", group: "talent", img: "images/items/ascended_sample_rook.png" },
+  counterfeit_resin:        { label: "Counterfeit Resin",       icon: "🧪", color: "#ec4899", group: "talent", img: "images/items/counterfeit_resin.png" },
+
   // ── Crown ──────────────────────────────────────────────────────────────────
   crown: { label: "Crown of Insight", icon: "👑", color: "#ffd700", group: "talent", img: "images/items/crown_of_insight.png" },
 

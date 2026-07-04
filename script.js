@@ -133,6 +133,15 @@ function selectCharacter(id) {
   localStorage.setItem("citlali-planner-char", id);
   hideCharSelect();
   applyCharacter();
+
+  // Track character selection event in GoatCounter
+  if (window.goatcounter && typeof window.goatcounter.count === 'function') {
+    window.goatcounter.count({
+      path: 'select/' + id,
+      title: 'Select Character: ' + CHAR.name,
+      event: true
+    });
+  }
 }
 
 function applyCharacter() {
@@ -210,6 +219,7 @@ function buildInventory() {
       inputEl.type = "number";
       inputEl.min = "0";
       inputEl.value = inv[key] || 0;
+      inputEl.setAttribute("autocomplete", "off");
       inputEl.addEventListener("input", save);
 
       card.appendChild(iconEl);
@@ -251,11 +261,23 @@ function loadValues() {
     e.value = v;
     inv[e.dataset.key] = parseInt(v) || 0;
   });
+  const defaults = {
+    "level": "1",
+    "ascension": "0",
+    "na": "1",
+    "skill": "1",
+    "burst": "1",
+    "target-level": "90",
+    "target-asc": "6",
+    "target-na": "10",
+    "target-skill": "10",
+    "target-burst": "10"
+  };
   ["level","ascension","na","skill","burst",
    "target-asc","target-level","target-na","target-skill","target-burst"]
     .forEach(id => {
       const el = document.getElementById(id);
-      if (el && d[id] !== undefined) el.value = d[id];
+      if (el) el.value = d[id] !== undefined ? d[id] : defaults[id];
     });
   document.querySelectorAll(".char-inputs input, .char-inputs select")
     .forEach(el => el.addEventListener("input", save));
@@ -544,6 +566,16 @@ document.getElementById("share-btn").addEventListener("click", () => {
     btn.classList.add("copied");
     setTimeout(() => { btn.textContent = "📤 Share"; btn.classList.remove("copied"); }, 2000);
   });
+
+  // Track share event in GoatCounter
+  const activeId = localStorage.getItem("citlali-planner-char") || "unknown";
+  if (window.goatcounter && typeof window.goatcounter.count === 'function') {
+    window.goatcounter.count({
+      path: 'share/' + activeId,
+      title: 'Generate Share Link: ' + CHAR.name,
+      event: true
+    });
+  }
 });
 
 // ── Init ──────────────────────────────────────────────────────────────────────
