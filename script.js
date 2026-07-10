@@ -95,7 +95,21 @@ function buildCharSelect() {
   const container = document.getElementById("char-cards");
   container.innerHTML = "";
   let shown = 0;
-  for (const [id, c] of Object.entries(CHARACTERS)) {
+
+  const elementOrder = Object.keys(ELEMENT_META);
+  const sorted = Object.entries(CHARACTERS)
+    .map(([id, c]) => ({ id, ...c }))
+    .sort((a, b) => {
+      const idxA = elementOrder.indexOf(a.element);
+      const idxB = elementOrder.indexOf(b.element);
+      const valA = idxA === -1 ? 999 : idxA;
+      const valB = idxB === -1 ? 999 : idxB;
+      if (valA !== valB) return valA - valB;
+      return a.name.localeCompare(b.name);
+    });
+
+  for (const c of sorted) {
+    const id = c.id;
     if (filterElement && c.element !== filterElement) continue;
     if (filterWeapon  && c.weapon  !== filterWeapon)  continue;
     shown++;

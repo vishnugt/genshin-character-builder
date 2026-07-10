@@ -2,6 +2,8 @@
 
 A fully offline, static HTML/CSS/JS planner for tracking character ascension and talent upgrade materials. No framework, no build step — open `index.html` directly in a browser or serve with any static file server.
 
+**Hosted online at:** [c6r5.com](https://c6r5.com) (Mirror: [genshin.gt.ms](https://genshin.gt.ms))
+
 ---
 
 ## Project Structure
@@ -146,22 +148,12 @@ Download the portrait, commit it to `portraits/`, and add the source URL to `ass
 
 | Source | Best for | URL pattern |
 |--------|----------|-------------|
-| paimon.moe | Released characters | `https://paimon.moe/images/characters/{name}.png` |
 | game8.co | Upcoming / unreleased | Right-click portrait → Copy image address |
-| gi.yatta.moe | Fallback | `https://gi.yatta.moe/assets/UI/UI_AvatarIcon_{InternalName}.png` (Wanderer → Scaramouche) |
+| gi.yatta.moe | Primary / Fallback | `https://gi.yatta.moe/assets/UI/UI_AvatarIcon_{InternalName}.png` (Wanderer → Scaramouche) |
 
 ### Item icons
 
-**1. paimon.moe** — primary for released items:
-```
-https://paimon.moe/images/items/{snake_case_name}.png
-```
-Convert item name to snake_case: "Hero's Wit" → `heros_wit.png` (drop apostrophes)
-
-Known paimon.moe quirks:
-- "Wanderer's Advice" → `wanderes_advice.png` (missing 'r' — their typo, not a mistake here)
-
-**2. Project Amber** — for items not yet on paimon.moe (e.g. unreleased characters):
+**Project Amber (gi.yatta.moe)** — primary source:
 - Find the item ID from its Project Amber URL: `https://gi.yatta.moe/en/archive/material/{id}/{item-name}`
 - Then use: `https://gi.yatta.moe/assets/UI/UI_ItemIcon_{id}.png`
 
@@ -173,7 +165,7 @@ Known item IDs:
 | Philosophies of Vagrancy | 104364 |
 | Madman's Restraint | 113082 |
 
-**3. Mora**: `https://paimon.moe/images/mora.png`
+**Mora**: `https://gi.yatta.moe/assets/UI/UI_ItemIcon_202.png`
 
 ---
 
@@ -184,10 +176,6 @@ Known item IDs:
 Search: `genshin impact {character name} build site:game8.co`
 
 The ascension/talent material tables are clearly listed. Caveat: game8 lazy-loads all images as 1×1 GIF placeholders, so don't bother scraping images from there — only use it for material names and quantities.
-
-### Secondary source — paimon.moe
-
-`https://paimon.moe/characters/{character-name}` — good for released characters.
 
 ### Verification checklist
 
