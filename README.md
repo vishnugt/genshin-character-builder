@@ -72,7 +72,7 @@ Copy an existing entry (e.g. `citlali`) and fill in the fields.
 | `nation` | Mondstadt / Liyue / Inazuma / Sumeru / Fontaine / Natlan / Snezhnaya / etc. |
 | `emoji` | Fallback emoji if portrait image fails |
 | `color` | Hex accent color used throughout the UI for this character |
-| `img` | Portrait image URL (see Image Sources below) |
+| `img` | Local path to portrait image (e.g. "portraits/citlali.png") |
 | `materials` | Object of all materials keyed by short ID (see below) |
 | `matGroups` | Ordered group definitions: `{ groupId: { label: "Display Name" } }` |
 | `craftUp` | Crafting recipes: `{ higherTierKey: { from: "lowerTierKey", ratio: 3 } }` |
@@ -88,7 +88,7 @@ keyName: {
   icon:  "emoji fallback",
   color: "#hexcolor",
   group: "groupId",        // must match a key in matGroups
-  img:   "https://..."     // icon image URL
+  img:   "images/items/name.png" // local path to material icon image
 }
 ```
 
@@ -225,7 +225,7 @@ Set `comingSoon: true` to show a "Coming Soon" card on the select screen without
 characterKey: {
   name: "Name", element: "Cryo", weapon: "Catalyst", nation: "Snezhnaya",
   emoji: "🌸", color: "#hexcolor",
-  img: "https://...",
+  img: "portraits/name.png",
   comingSoon: true,
 }
 ```
